@@ -3,37 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Date-Wise EVS Tracker with Dashboard</title>
+    <title>EVS Project Advanced Progress Tracker</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; }
-        .container { max-width: 850px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #333; margin-bottom: 10px; }
-        .date-section { text-align: center; margin-bottom: 25px; background: #e8f5e9; padding: 15px; border-radius: 6px; }
-        .date-section label { font-weight: bold; margin-right: 10px; color: #2e7d32; }
-        .date-section input[type="date"] { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #2e7d32; color: white; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        select, input[type="text"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .tracker-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 850px;
+        }
+        .header h2 {
+            text-align: center;
+            margin: 0 0 20px 0;
+            color: #2e7d32;
+        }
+        .date-picker {
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #e8f5e9;
+            padding: 12px;
+            border-radius: 4px;
+        }
+        .date-picker label {
+            font-weight: bold;
+            color: #2e7d32;
+            margin-right: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 12px;
+        }
+        th {
+            background-color: #2e7d32;
+            color: white;
+        }
+        select, input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .stat-card {
+            background-color: #f1f8e9;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #c8e6c9;
+        }
+        .stat-val {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-top: 5px;
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .btn {
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .submit-btn { background-color: #0288d1; }
+        .submit-btn:hover { background-color: #01579b; }
+        .final-btn { background-color: #d32f2f; display: none; }
+        .final-btn:hover { background-color: #c62828; }
         
-        /* Dashboard Styling */
-        .dashboard { display: flex; justify-content: space-around; margin-top: 30px; background: #f0f4c3; padding: 15px; border-radius: 8px; border: 1px solid #c5e1a5; }
-        .stat-box { text-align: center; }
-        .stat-box h3 { margin: 0; color: #33691e; font-size: 24px; }
-        .stat-box p { margin: 5px 0 0 0; font-weight: bold; color: #558b2f; }
+        .report-card {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px solid #2e7d32;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            display: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .student-summary {
+            background: #fff;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 5px solid #2e7d32;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>🌱 EVS Group Project Tracker</h2>
-    
-    <div class="date-section">
-        <label for="track-date">Select Date (Wednesday):</label>
-        <input type="date" id="track-date" onchange="loadDateData()">
+<div class="tracker-container">
+    <div class="header">
+        <h2>🌱 EVS Group Project Per-Day Tracker</h2>
     </div>
-    
+
+    <div class="date-picker">
+        <label for="wednesday-date">Select Wednesday Date:</label>
+        <select id="wednesday-date" onchange="loadDayData()">
+            <option value="2026-09-09">09 September 2026</option>
+            <option value="2026-09-16">16 September 2026</option>
+            <option value="2026-09-23">23 September 2026</option>
+            <option value="2026-09-30">30 September 2026</option>
+            <option value="2026-10-07">07 October 2026</option>
+            <option value="2026-10-14">14 October 2026</option>
+            <option value="2026-10-21">21 October 2026</option>
+            <option value="2026-10-28">28 October 2026 (Final Day)</option>
+        </select>
+    </div>
+
     <table>
         <thead>
             <tr>
@@ -43,104 +155,68 @@
                 <th>Remarks</th>
             </tr>
         </thead>
-        <tbody id="tracker-table"></tbody>
+        <tbody>
+            <!-- 1. Yeshu -->
+            <tr>
+                <td style="font-weight:bold;">Yeshu</td>
+                <td><select id="attendance-0" onchange="calculateLiveStats()"><option value="Present">Present</option><option value="Absent">Absent</option></select></td>
+                <td><select id="progress-0" onchange="calculateLiveStats()"><option value="Not Started">Not Started</option><option value="In Progress">In Progress</option><option value="Completed">Completed</option></select></td>
+                <td><input type="text" id="remarks-0" placeholder="Add remarks..."></td>
+            </tr>
+            <!-- 2. Nihal -->
+            <tr>
+                <td style="font-weight:bold;">Nihal</td>
+                <td><select id="attendance-1" onchange="calculateLiveStats()"><option value="Present">Present</option><option value="Absent">Absent</option></select></td>
+                <td><select id="progress-1" onchange="calculateLiveStats()"><option value="Not Started">Not Started</option><option value="In Progress">In Progress</option><option value="Completed">Completed</option></select></td>
+                <td><input type="text" id="remarks-1" placeholder="Add remarks..."></td>
+            </tr>
+            <!-- 3. Chaitanya -->
+            <tr>
+                <td style="font-weight:bold;">Chaitanya</td>
+                <td><select id="attendance-2" onchange="calculateLiveStats()"><option value="Present">Present</option><option value="Absent">Absent</option></select></td>
+                <td><select id="progress-2" onchange="calculateLiveStats()"><option value="Not Started">Not Started</option><option value="In Progress">In Progress</option><option value="Completed">Completed</option></select></td>
+                <td><input type="text" id="remarks-2" placeholder="Add remarks..."></td>
+            </tr>
+            <!-- 4. Yash -->
+            <tr>
+                <td style="font-weight:bold;">Yash</td>
+                <td><select id="attendance-3" onchange="calculateLiveStats()"><option value="Present">Present</option><option value="Absent">Absent</option></select></td>
+                <td><select id="progress-3" onchange="calculateLiveStats()"><option value="Not Started">Not Started</option><option value="In Progress">In Progress</option><option value="Completed">Completed</option></select></td>
+                <td><input type="text" id="remarks-3" placeholder="Add remarks..."></td>
+            </tr>
+            <!-- 5. Muskan -->
+            <tr>
+                <td style="font-weight:bold;">Muskan</td>
+                <td><select id="attendance-4" onchange="calculateLiveStats()"><option value="Present">Present</option><option value="Absent">Absent</option></select></td>
+                <td><select id="progress-4" onchange="calculateLiveStats()"><option value="Not Started">Not Started</option><option value="In Progress">In Progress</option><option value="Completed">Completed</option></select></td>
+                <td><input type="text" id="remarks-4" placeholder="Add remarks..."></td>
+            </tr>
+            <!-- 6. Khushi -->
+            <tr>
+                <td style="font-weight:bold;">Khushi</td>
+                <td><select id="attendance-5" onchange="calculateLiveStats()"><option value="Present">Present</option><option value="Absent">Absent</option></select></td>
+                <td><select id="progress-5" onchange="calculateLiveStats()"><option value="Not Started">Not Started</option><option value="In Progress">In Progress</option><option value="Completed">Completed</option></select></td>
+                <td><input type="text" id="remarks-5" placeholder="Add remarks..."></td>
+            </tr>
+            <!-- 7. Priyanjali -->
+            <tr>
+                <td style="font-weight:bold;">Priyanjali</td>
+                <td><select id="attendance-6" onchange="calculateLiveStats()"><option value="Present">Present</option><option value="Absent">Absent</option></select></td>
+                <td><select id="progress-6" onchange="calculateLiveStats()"><option value="Not Started">Not Started</option><option value="In Progress">In Progress</option><option value="Completed">Completed</option></select></td>
+                <td><input type="text" id="remarks-6" placeholder="Add remarks..."></td>
+            </tr>
+            <!-- 8. Mahi -->
+            <tr>
+                <td style="font-weight:bold;">Mahi</td>
+                <td><select id="attendance-7" onchange="calculateLiveStats()"><option value="Present">Present</option><option value="Absent">Absent</option></select></td>
+                <td><select id="progress-7" onchange="calculateLiveStats()"><option value="Not Started">Not Started</option><option value="In Progress">In Progress</option><option value="Completed">Completed</option></select></td>
+                <td><input type="text" id="remarks-7" placeholder="Add remarks..."></td>
+            </tr>
+        </tbody>
     </table>
 
-    <!-- Overall Progress Dashboard -->
-    <div class="dashboard">
-        <div class="stat-box">
-            <h3 id="total-present">0 / 8</h3>
-            <p>👥 Total Present Today</p>
+    <div class="stats-container">
+        <div class="stat-card">
+            <div style="color: #555; font-weight: bold;">👥 Total Present Today</div>
+            <div class="stat-val" id="total-present-count">0 / 8</div>
         </div>
-        <div class="stat-box">
-            <h3 id="overall-progress">0%</h3>
-            <p>📊 Project Completion Rate</p>
-        </div>
-    </div>
-</div>
-
-<script>
-    // 8 Students Names
-    const students = [
-        "Yeshu", 
-        "Nihal", 
-        "Chaitanya", 
-        "Yash", 
-        "Muskan", 
-        "Khushi", 
-        "Priyanjali", 
-        "Mahi"
-    ];
-    
-    const dateInput = document.getElementById('track-date');
-    const today = new Date().toISOString().split('T')[0];
-    dateInput.value = today;
-
-    function renderTable() {
-        const tbody = document.getElementById('tracker-table');
-        tbody.innerHTML = "";
-        const selectedDate = dateInput.value;
-
-        students.forEach((name) => {
-            const savedAtt = localStorage.getItem(`${selectedDate}-${name}-att`) || "Present";
-            const savedProg = localStorage.getItem(`${selectedDate}-${name}-prog`) || "Not Started";
-            const savedRem = localStorage.getItem(`${selectedDate}-${name}-rem`) || "";
-
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><strong>${name}</strong></td>
-                <td>
-                    <select onchange="saveData('${name}', 'att', this.value)">
-                        <option value="Present" ${savedAtt === 'Present' ? 'selected' : ''}>Present</option>
-                        <option value="Absent" ${savedAtt === 'Absent' ? 'selected' : ''}>Absent</option>
-                    </select>
-                </td>
-                <td>
-                    <select onchange="saveData('${name}', 'prog', this.value)">
-                        <option value="Not Started" ${savedProg === 'Not Started' ? 'selected' : ''}>Not Started</option>
-                        <option value="In Progress" ${savedProg === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                        <option value="Completed" ${savedProg === 'Completed' ? 'selected' : ''}>Completed</option>
-                    </select>
-                </td>
-                <td>
-                    <input type="text" placeholder="Add remarks..." value="${savedRem}" oninput="saveData('${name}', 'rem', this.value)">
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        updateDashboard();
-    }
-
-    function saveData(name, key, value) {
-        const selectedDate = dateInput.value;
-        localStorage.setItem(`${selectedDate}-${name}-${key}`, value);
-        updateDashboard();
-    }
-
-    function updateDashboard() {
-        const selectedDate = dateInput.value;
-        let presentCount = 0;
-        let completedCount = 0;
-
-        students.forEach((name) => {
-            const att = localStorage.getItem(`${selectedDate}-${name}-att`) || "Present";
-            const prog = localStorage.getItem(`${selectedDate}-${name}-prog`) || "Not Started";
-
-            if (att === "Present") presentCount++;
-            if (prog === "Completed") completedCount++;
-        });
-
-        document.getElementById('total-present').innerText = `${presentCount} / 8`;
-        const progressPercent = Math.round((completedCount / 8) * 100);
-        document.getElementById('overall-progress').innerText = `${progressPercent}%`;
-    }
-
-    function loadDateData() {
-        renderTable();
-    }
-
-    renderTable();
-</script>
-</body>
-</html>
